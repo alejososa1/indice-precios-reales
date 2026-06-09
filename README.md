@@ -1,60 +1,80 @@
-Índice de brecha entre precios de góndola y precios reales frecuentes en supermercados argentinos.
+# Índice de Precios Reales — Rosario
+
+Índice que mide la brecha entre el precio de góndola publicado y el precio real que paga un consumidor que optimiza los descuentos disponibles en supermercados de Rosario, Argentina.
+
+---
 
 ## El problema
 
-Los supermercados publican precios de góndola inflados que no reflejan 
-el precio real al que se puede conseguir un producto de forma habitual. 
-Las promociones, descuentos y precios con tarjeta aparecen como excepciones,
-cuando en realidad son el precio verdadero. En ese caso, el precio de góndola 
-sin descuento deja de ser el precio normal y funciona como un precio inflado de referencia.
+Los supermercados publican precios de lista que no reflejan lo que efectivamente paga la mayoría de los consumidores. Promociones, descuentos de cadena y reintegros por medio de pago son parte del precio habitual — no excepciones. El precio de góndola sin descuento funciona como precio de referencia inflado.
+
+Lo que ningún índice mide: cuánto vale realmente un producto cuando el consumidor usa los beneficios disponibles para cualquier persona.
 
 ## La hipótesis
 
-Un producto que aparece a un precio bajo 2 o 3 veces en el historial 
-no está "de oferta" — ese es su precio real. 
-El precio de góndola sin descuento es el precio anzuelo.
-
-## Objetivo
-
-Construir un índice que mida la brecha entre:
-
-- el precio oficial publicado
-- y el precio real frecuente observado
-
-El proyecto comienza con la categoría de galletitas y busca escalar 
-progresivamente hacia otros productos de consumo masivo.
+El precio real de un producto no es el precio de lista. Es el precio que surge de aplicar sistemáticamente los descuentos del supermercado y los reintegros por medio de pago de acceso general. Esa brecha es medible, consistente y varía por cadena.
 
 ## Metodología
 
-Los datos se relevan manualmente utilizando información pública de Precios Claros.
+El proyecto tiene una metodología documentada que define con precisión qué se mide y cómo se calcula. Ver [`docs/metodologia.md`](docs/metodologia.md).
 
-Cada producto registra:
+En resumen:
+- **Precio de lista:** precio publicado en la app o web del supermercado, sin descuentos.
+- **Precio real:** precio tras aplicar descuentos del supermercado y reintegros por medio de pago disponibles para el público general.
+- **Consumidor de referencia:** optimiza el reintegro disponible — compra por el monto exacto que maximiza el beneficio sin superar el tope.
+- **Brecha:** diferencia entre precio de lista y precio real, expresada en porcentaje.
 
-- precio oficial
-- precio real observado
-- porcentaje de brecha
-- fecha de relevamiento
+Los descuentos dirigidos a segmentos específicos (jubilados, programas sociales) no forman parte del índice principal.
 
-Se considera precio real aquel que aparece con frecuencia en el historial 
-(2 o 3 registros), no el precio excepcional de una única promoción.
+## Cadenas relevadas
 
-La brecha porcentual se calcula como:
+| Cadena | Acumula reintegros externos |
+|---|---|
+| Carrefour | Sí |
+| La Gallega | A verificar |
+| Coto | No — excluye promociones bancarias |
 
-(precio oficial - precio real) / precio real × 100
+## Productos y categorías
+
+Canasta inicial de productos de consumo masivo:
+
+| Categoría | Criterio |
+|---|---|
+| Yerba mate | 3 marcas líderes |
+| Leche | 3 marcas líderes, presentación 1L |
+| Café | 3 marcas líderes, presentación estándar |
+
+## Estructura del repositorio
+
+```
+indice-precios-reales/
+├── data/
+│   └── relevamientos.csv      # Datos de precios relevados
+├── docs/
+│   ├── metodologia.md         # Definición de qué se mide y cómo
+│   └── esquema_tablas.md      # Modelo de datos del proyecto
+├── notebooks/
+│   └── analisis_exploratorio.ipynb   # Próximamente
+└── README.md
+```
 
 ## Estado actual
 
-🟡 Etapa inicial — relevamiento manual
+🟡 **Etapa inicial — construcción de dataset**
 
-- Categoría actual: galletitas
-- Dataset inicial en CSV
-- Construcción de historial semanal
-- Primeras pruebas de análisis exploratorio
+- Metodología definida y documentada
+- Esquema de tablas diseñado
+- Relevamiento de datos en curso (semana 1)
 
 ## Próximos pasos
 
-- Ampliar historial temporal
-- Incorporar nuevas categorías
-- Automatizar recolección de datos
-- Desarrollar visualizaciones
+- Completar primer relevamiento con canasta definida
+- Análisis exploratorio en Jupyter Notebook
+- Construir historial de al menos 4 semanas
+- Visualizaciones de brecha por producto y cadena
+- Migración a PostgreSQL y pipeline ETL
+
+---
+
+*Proyecto en desarrollo. Los datos son relevados manualmente desde las plataformas digitales oficiales de cada cadena.*
 - Construir análisis comparativos
